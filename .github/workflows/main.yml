@@ -55,5 +55,5 @@ jobs:
           name: react-build
           path: build
 
-      - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v4
+      - run: npm install -g gh-pages
+      - run: gh-pages -d build
