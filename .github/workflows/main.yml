@@ -39,20 +39,19 @@ jobs:
           name: react-build
           path: build
 
+
   deploy-github-pages:
     needs: build
     runs-on: ubuntu-latest
-
-    permissions:
-      contents: write
 
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
           name: react-build
+          path: build
 
       - name: Deploy to GitHub Pages
         run: |
           npm install -g gh-pages
-          gh-pages -d .
+          gh-pages -d build
