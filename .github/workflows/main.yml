@@ -39,7 +39,7 @@ jobs:
           name: react-build
           path: build
 
-
+  
   deploy-github-pages:
     needs: build
     runs-on: ubuntu-latest
@@ -48,8 +48,8 @@ jobs:
       url: ${{ steps.deploy.outputs.page_url }}
   
     permissions:
-      pages: write      # allow publishing to Pages
-      id-token: write   # needed for OIDC authentication
+      pages: write
+      id-token: write
   
     steps:
       - name: Download artifact
@@ -61,8 +61,9 @@ jobs:
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: build
+          path: build   # uploads the contents of build/
   
       - name: Deploy to GitHub Pages
         id: deploy
         uses: actions/deploy-pages@v4
+
