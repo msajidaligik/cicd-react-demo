@@ -22,7 +22,8 @@ jobs:
   build:
     needs: test
     runs-on: ubuntu-latest
-
+#    env:
+#      - DISABLE_ESLINT_PLUGIN: true
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
