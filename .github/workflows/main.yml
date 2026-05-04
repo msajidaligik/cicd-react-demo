@@ -48,7 +48,7 @@ jobs:
           path: build
 
   
-  deploy-github-pages:
+  deploy-on-github-pages:
     needs: build
     runs-on: ubuntu-latest
     environment:
@@ -75,3 +75,29 @@ jobs:
         id: deploy
         uses: actions/deploy-pages@v4
 
+  deploy-on-AWS-EC2-Instance:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: ec2-end-url
+      url: ${{ steps.set-url.outputs.page_url }}
+  
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: react-build
+          path: build
+  
+      - name: Copying the files to the ec2 instacne
+        uses: burnett01/rsync-deployments@6.0.0
+        with:
+          switches: -vzr --delete --omit-dir-times
+          path: ./
+          remote_path: /var/www/html/
+          remote_host: ${{vars.EC2_HOST}}
+          remote_user: ${{vars.EC2_USER}}
+          remote_key: ${{ secrets.EC2_PRIVATE_KEY }}
+      - name: Set deployment URL
+        id: set-url
+        run: echo "page_url=http://${{ vars.EC2_HOST }}" >> $GITHUB_OUTPUT
