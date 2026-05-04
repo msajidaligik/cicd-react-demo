@@ -93,7 +93,7 @@ jobs:
         uses: burnett01/rsync-deployments@6.0.0
         with:
           switches: -vzr --delete --omit-dir-times
-          path: ./
+          path: ./build/*
           remote_path: /var/www/html/
           remote_host: ${{vars.EC2_HOST}}
           remote_user: ${{vars.EC2_USER}}
