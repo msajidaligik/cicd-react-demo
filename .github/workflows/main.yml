@@ -1,8 +1,15 @@
-name: CI-CD Pipeline
+name: CICD Pipeline For Simple React Counter Increment App
+
+run-name: >+
+  CI Pipeline triggered by ${{github.actor}}
+  on event':' ${{github.event_name}}
+  -> branch':' ${{github.ref_name}}
+  for repository':' ${{github.repository}}
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
   test:
