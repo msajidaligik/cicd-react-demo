@@ -29,23 +29,34 @@ jobs:
   build:
     needs: test
     runs-on: ubuntu-latest
-    env:
-      PUBLIC_URL: /cicd-react-demo
-#     DISABLE_ESLINT_PLUGIN: true
+    #env:
+     #DISABLE_ESLINT_PLUGIN: true
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 24
 
-      - run: npm install
-      - run: PUBLIC_URL=/cicd-react-demo npm run build
+      - name: Installing dependencies 
+        run: npm install
+        
+      - name: Build react app for deploying it in the subdirectoy
+        run: PUBLIC_URL=/cicd-react-demo BUILD_PATH=build-subdirectory npm run build
 
-      - name: Upload artifact
+      - name: Build react app for deploying it at the root level
+        run: PUBLIC_URL=/ BUILD_PATH=build-root npm run build
+
+      - name: Upload build-subdirectory artifact
         uses: actions/upload-artifact@v4
         with:
-          name: react-build
-          path: build
+          name: react-build-subdirectory
+          path: build-subdirectory
+          
+      - name: Upload build-root artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: react-build-root
+          path: build-root
 
   
   deploy-on-github-pages:
@@ -63,13 +74,13 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
-          name: react-build
-          path: build
+          name: react-build-subdirectory
+          path: build-subdirectory
   
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: build   # uploads the contents of build/
+          path: build-subdirectory   # uploads the contents of build-subdirectory/
   
       - name: Deploy to GitHub Pages
         id: deploy
@@ -86,14 +97,14 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
-          name: react-build
-          path: build
+          name: react-build-root
+          path: build-root
   
       - name: Copying the files to the ec2 instacne
         uses: burnett01/rsync-deployments@6.0.0
         with:
           switches: -vzr --delete --omit-dir-times
-          path: ./build/*
+          path: ./build-root/*
           remote_path: /var/www/html/
           remote_host: ${{vars.EC2_HOST}}
           remote_user: ${{vars.EC2_USER}}
