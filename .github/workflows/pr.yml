@@ -1,4 +1,4 @@
-name: PR Checks
+name: PR Checks in class
 
 on:
   pull_request:
