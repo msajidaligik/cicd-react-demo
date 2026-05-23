@@ -1,12 +1,86 @@
-# Getting Started with Create React App
+# React CI/CD Pipeline
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This repository demonstrates a complete CI/CD pipeline for a simple React Counter application using:
 
-## Available Scripts
+- GitHub Actions (CI/CD)
+- GitHub Pages (Static Hosting)
+- AWS EC2 (Production Deployment)
+- Automated Testing & Linting
 
-In the project directory, you can run:
+## Project Overview
+This project is built to understand how modern CI/CD pipelines work in real-world scenarios.
 
-### `npm start`
+### Pipeline Workflow
+When code is pushed or a pull request is created:
+#### Pull Request Workflow 
+Triggered on PR to main:
+  - Runs lint checks
+  - Runs tests
+  - Builds React app
+
+#### Push Workflow (Main Branch)
+Triggered on push to main:
+- CI Stage
+  - Install dependencies
+  - Lint code
+  - Run tests
+
+- Build Stage
+
+  - Build for GitHub Pages (subdirectory)
+  - Build for EC2 (root level)
+
+- Deployment Stage
+    - GitHub Pages
+        - Deploys app under:
+            ```
+            https://msajidaligik.github.io/react-cicd-pipeline/
+            ```
+    - AWS EC2:
+        - Deploys app to:
+            ```
+            /var/www/html/
+            ```
+        - Uses rsync for efficient file transfer
+
+#### Required GitHub Secrets & Variables
+- Secrets
+    ```
+    EC2_PRIVATE_KEY → SSH private key for EC2 access
+    ```
+
+- Variables
+    ```
+    EC2_HOST → Public IP / DNS of EC2
+    EC2_USER → SSH username (e.g., ubuntu)
+    ```
+#### Deployment URLs
+- GitHub Pages → (auto-generated after deployment)
+- EC2 Instance → http://<EC2_PUBLIC_IP>
+
+## Tech Stack
+
+- React (Frontend)
+- GitHub Actions (CI/CD)
+- GitHub Pages (Static Deployment)
+- AWS EC2 + Apache2/Ngine (Production Hosting)
+- Node.js
+
+## Local Setup Instructions
+### Clone the Repository
+```
+git clone https://github.com/msajidaligik/react-cicd-pipeline.git
+cd react-cicd-pipeline
+```
+### Install Dependencies
+```
+npm install
+```
+### Run the App Locally
+
+```
+npm start
+```
 
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
@@ -14,57 +88,13 @@ Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 The page will reload when you make changes.\
 You may also see any lint errors in the console.
 
-### `npm test`
+### Available Scripts
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+In the project directory, you can run:
 
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+```
+npm start        # Run locally
+npm run build    # Create production build
+npm test         # Run tests
+npm run lint     # Lint the project
+```
