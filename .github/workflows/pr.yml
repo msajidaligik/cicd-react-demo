@@ -1,25 +1,68 @@
-name: PR Checks in class
+name: PR Checks For Simple React Counter Increment App
+
+run-name: >+
+  PR Checks triggered by ${{ github.actor }}
+  on event: ${{ github.event_name }}
+  -> branch: ${{ github.ref_name }}
+  for repository: ${{ github.repository }}
 
 on:
   pull_request:
-    branches: 
+    branches:
       - main
 
 jobs:
-  test-and-lint:
+  test:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 24
 
-      - run: npm install
+      - name: Install dependencies
+        run: npm install
 
       - name: Run lint
         run: npm run lint
 
       - name: Run tests
         run: npm test -- --watchAll=false
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build React app for GitHub Pages subdirectory deployment
+        run: PUBLIC_URL=/cicd-react-demo BUILD_PATH=build-subdirectory npm run build
+
+      - name: Build React app for root level deployment
+        run: PUBLIC_URL=/ BUILD_PATH=build-root npm run build
+
+      - name: Upload build-subdirectory artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-react-build-subdirectory
+          path: build-subdirectory
+
+      - name: Upload build-root artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-react-build-root
+          path: build-root
