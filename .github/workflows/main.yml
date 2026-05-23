@@ -41,7 +41,7 @@ jobs:
         run: npm install
         
       - name: Build react app for deploying it in the subdirectoy
-        run: PUBLIC_URL=/cicd-react-demo BUILD_PATH=build-subdirectory npm run build
+        run: PUBLIC_URL=/react-cicd-pipeline BUILD_PATH=build-subdirectory npm run build
 
       - name: Build react app for deploying it at the root level
         run: PUBLIC_URL=/ BUILD_PATH=build-root npm run build
